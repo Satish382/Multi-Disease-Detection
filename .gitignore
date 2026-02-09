@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Flask
+instance/
+.webassets-cache
+
+# User Data
+user.json
+user_backup.json
+
+# Debug Files
+debug_output.txt
+prediction_output.txt
+investigation_report.txt
+
+# Large Model Files (optional - uncomment if you don't want to push models)
+# *.keras
+# *.h5
+
+# Large Archive Files
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Test images
+test_tumor_image.jpg
+mri.jpg
+download.jpg
+images.jpg
+OIP.webp
+
+# Temporary files
+*.tmp
+*.bak
+*.log

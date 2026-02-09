@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical AI Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-hospital-alt"></i>
+                <h2>MediScan AI</h2>
+            </div>
+            
+            <nav class="navigation">
+                <button class="nav-btn active" data-page="brain">
+                    <i class="fas fa-brain"></i>
+                    <span>Brain Tumor Detection</span>
+                </button>
+                <button class="nav-btn" data-page="alzheimer">
+                    <i class="fas fa-head-side-brain"></i>
+                    <span>Alzheimer Detection</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-info">
+                <h3>About</h3>
+                <p>AI-powered medical image analysis system using federated learning models for accurate diagnosis.</p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>99%+</strong>
+                            <span>Accuracy</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <strong>HIPAA</strong>
+                            <span>Compliant</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1 id="page-title">
+                    <i class="fas fa-brain"></i>
+                    Brain Tumor Detection
+                </h1>
+                <div class="header-actions">
+                    <button class="btn-icon" title="Help">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <button class="btn-icon" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-grid">
+                <!-- Upload Section -->
+                <div class="card upload-card">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> Upload Medical Scan</h2>
+                    
+                    <form id="upload-form" enctype="multipart/form-data">
+                        <div class="upload-area" id="upload-area">
+                            <i class="fas fa-file-medical"></i>
+                            <h3>Drag & Drop your image here</h3>
+                            <p>or</p>
+                            <label for="file-input" class="btn-primary">
+                                <i class="fas fa-folder-open"></i> Browse Files
+                            </label>
+                            <input type="file" id="file-input" accept="image/*" hidden>
+                            <p class="file-info">Supported: JPG, PNG, JPEG</p>
+                        </div>
+                        
+                        <div class="preview-container" id="preview-container" style="display: none;">
+                            <img id="preview-image" src="" alt="Preview">
+                            <button type="button" class="btn-remove" id="remove-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <button type="submit" class="btn-analyze" id="analyze-btn" disabled>
+                            <i class="fas fa-microscope"></i> Analyze Image
+                        </button>
+                    </form>
+                    
+                    <div class="loading" id="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing image...</p>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="card results-card">
+                    <h2><i class="fas fa-chart-bar"></i> Analysis Results</h2>
+                    
+                    <div class="empty-state" id="empty-state">
+                        <i class="fas fa-file-medical-alt"></i>
+                        <p>Upload an image to see results</p>
+                    </div>
+                    
+                    <div class="results-content" id="results-content" style="display: none;">
+                        <div class="result-header">
+                            <div class="predicted-label">
+                                <span class="label-text">Predicted Condition:</span>
+                                <h3 id="predicted-condition">-</h3>
+                            </div>
+                            <div class="confidence-badge">
+                                <span class="confidence-text">Confidence</span>
+                                <div class="confidence-value" id="confidence-value">0%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidence-fill"></div>
+                        </div>
+                        
+                        <div class="predictions-list" id="predictions-list">
+                            <!-- Predictions will be inserted here -->
+                        </div>
+                        
+                        <div class="result-actions">
+                            <button class="btn-secondary">
+                                <i class="fas fa-download"></i> Download Report
+                            </button>
+                            <button class="btn-secondary">
+                                <i class="fas fa-share-alt"></i> Share Results
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <i class="fas fa-brain"></i>
+                    <h4>Advanced AI</h4>
+                    <p>Powered by deep learning neural networks</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-lock"></i>
+                    <h4>Secure</h4>
+                    <p>Your data is encrypted and protected</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-bolt"></i>
+                    <h4>Fast Results</h4>
+                    <p>Get analysis results in seconds</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Medical AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #E0E7FF 0%, #F0F4FF 50%, #E0F2FE 100%);
+            color: #1E293B;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .navbar-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .navbar h1 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1E293B;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: #64748B;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: #F1F5F9;
+            color: #1E293B;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            color: #1E293B;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #1E293B;
+            color: white;
+            border-color: #1E293B;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 60px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+        }
+
+        .hero-content {
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section h2 {
+            font-size: 42px;
+            font-weight: 900;
+            color: #1E293B;
+            margin-bottom: 16px;
+            letter-spacing: -1.5px;
+            line-height: 1.2;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            color: #64748B;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        /* Detection Type Tabs */
+        .detection-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid #E2E8F0;
+            color: #64748B;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .upload-btn-hero {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-btn-hero:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Brain Illustration */
+        .brain-illustration {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 450px;
+            height: 450px;
+            z-index: 1;
+        }
+
+        .brain-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 40px rgba(59, 130, 246, 0.3));
+            background: transparent !important;
+            mix-blend-mode: normal;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            background: #D1FAE5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #059669;
+            font-size: 16px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1E293B;
+            letter-spacing: -0.3px;
+        }
+
+        .diagnosis-result {
+            font-size: 28px;
+            font-weight: 800;
+            color: #059669;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .confidence-text {
+            color: #64748B;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .confidence-text span {
+            color: #059669;
+            font-weight: 800;
+        }
+
+        /* Chart Card */
+        .chart-card {
+            grid-column: span 1;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+            margin-top: 20px;
+        }
+
+        /* Image Card */
+        .image-card {
+            grid-column: span 1;
+        }
+
+        .mri-image {
+            width: 100%;
+            border-radius: 16px;
+            margin-top: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .image-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 12px;
+            background: #F8FAFC;
+            border-radius: 10px;
+        }
+
+        .image-info i {
+            color: #3B82F6;
+        }
+
+        .image-info span {
+            font-size: 12px;
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        /* Recent Scans Table */
+        .recent-scans-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title-row h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1E293B;
+        }
+
+        .view-all-btn {
+            color: #3B82F6;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scans-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .scans-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: #F8FAFC;
+            color: #64748B;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .scans-table td {
+            padding: 16px;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1E293B;
+        }
+
+        .scans-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .scans-table tr:hover {
+            background: #F8FAFC;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .status-green {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .status-orange {
+            background: #FED7AA;
+            color: #EA580C;
+        }
+
+        .status-yellow {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .disclaimer i {
+            color: #F59E0B;
+            font-size: 18px;
+        }
+
+        .disclaimer p {
+            color: #92400E;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Image Zoom Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s;
+        }
+
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #3B82F6;
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Hidden Elements */
+        #fileInput {
+            display: none;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        /* Loader */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .spinner {
+            border: 4px solid #E2E8F0;
+            border-top: 4px solid #3B82F6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .brain-illustration {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">
+            <div class="navbar-icon">🧠</div>
+            <h1>Medical AI</h1>
+        </div>
+        <div class="navbar-actions">
+            <button class="nav-btn">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="download-btn" id="downloadReportBtn" style="display: none;" onclick="downloadReport()">
+                <i class="fas fa-download"></i>
+                Download Diagnosis Report
+            </button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <h2>AI-Powered Medical Diagnosis Platform</h2>
+                <p>Detect brain tumors & neurological disorders using deep learning</p>
+                
+                <!-- Detection Type Tabs -->
+                <div class="detection-tabs">
+                    <button class="tab-btn active" onclick="switchDetectionType('brain_tumor')">
+                        <i class="fas fa-brain"></i>
+                        Brain Tumor
+                    </button>
+                    <button class="tab-btn" onclick="switchDetectionType('alzheimer')">
+                        <i class="fas fa-head-side-virus"></i>
+                        Alzheimer's
+                    </button>
+                </div>
+
+                <button class="upload-btn-hero" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-upload"></i>
+                    Upload MRI Scan
+                </button>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            <div class="brain-illustration">
+                <img src="/static/brain_hero.png" alt="Brain Illustration">
+            </div>
+        </div>
+
+        <!-- Loader -->
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p style="color: #1E293B; font-weight: 700; font-size: 18px;">Analyzing Image...</p>
+            <small style="color: #64748B; font-weight: 500;">Our AI is processing your medical scan</small>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="cards-grid">
+                <!-- Diagnosis Result Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>Diagnosis Result</h3>
+                    </div>
+                    <div class="diagnosis-result" id="diagnosisLabel">NO TUMOR DETECTED</div>
+                    <div class="confidence-text">
+                        <span id="diagnosisConfidence">41.8%</span> Confidence
+                    </div>
+                </div>
+
+                <!-- AI Confidence Distribution Card -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>AI Confidence Distribution</h3>
+                    </div>
+                    <p style="font-size: 13px; color: #64748B; margin-bottom: 10px;">Model confidence based on softmax probabilities</p>
+                    <div class="chart-container">
+                        <canvas id="donutChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Uploaded MRI Scan Card -->
+                <div class="card image-card">
+                    <div class="card-header">
+                        <h3>Uploaded MRI Scan</h3>
+                        <i class="fas fa-expand-alt" style="margin-left: auto; color: #64748B; cursor: pointer;" onclick="openImageModal()"></i>
+                    </div>
+                    <img id="uploadedImage" class="mri-image" src="" alt="MRI Scan" onclick="openImageModal()" style="cursor: pointer;">
+                    <div class="image-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="imageInfo">Brain Tumor • Resolution: 512 x 512 • Uploaded: Just now</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="disclaimer">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>This system assists doctors and is not a replacement for medical professionals.</p>
+            </div>
+        </div>
+
+        <!-- Recent Scans Table -->
+        <div class="recent-scans-card">
+            <div class="card-title-row">
+                <h3>Recent Scans</h3>
+                <div class="view-all-btn">
+                    View All <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <table class="scans-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Disease</th>
+                        <th>Result</th>
+                        <th>Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="scansTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #94A3B8; padding: 40px 0;">
+                            No scans yet. Upload an image to get started.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Image Zoom Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <span class="modal-close" onclick="closeImageModal()">&times;</span>
+        <img id="modalImage" class="modal-content">
+    </div>
+
+    <script>
+        let currentDetectionType = 'brain_tumor';
+        let donutChartInstance = null;
+        let scanHistory = [];
+        let currentPredictionData = null;
+
+        // Switch detection type
+        function switchDetectionType(type) {
+            currentDetectionType = type;
+            
+            // Update tab buttons
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        // File upload handler
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files[0]);
+            }
+        });
+
+        async function handleFileUpload(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('detection_type', currentDetectionType);
+
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('resultsSection').classList.remove('active');
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentPredictionData = data;
+                    displayResults(data);
+                    addToHistory(data);
+                    document.getElementById('downloadReportBtn').style.display = 'flex';
+                } else {
+                    let errorMsg = data.error || 'Prediction failed';
+                    alert('Error: ' + errorMsg);
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            document.getElementById('resultsSection').classList.add('active');
+            
+            // Display diagnosis
+            const label = data.predicted_label.toUpperCase();
+            document.getElementById('diagnosisLabel').textContent = label;
+            const confidencePercent = (data.confidence * 100).toFixed(1);
+            document.getElementById('diagnosisConfidence').textContent = confidencePercent + '%';
+
+            // Update image info
+            const detectionTypeText = currentDetectionType === 'brain_tumor' ? 'Brain Tumor' : "Alzheimer's";
+            document.getElementById('imageInfo').textContent = `${detectionTypeText} • Resolution: 512 x 512 • Uploaded: Just now`;
+
+            // Display image
+            document.getElementById('uploadedImage').src = 'data:image/png;base64,' + data.image;
+
+            // Create donut chart
+            createDonutChart(data.all_predictions);
+        }
+
+        function createDonutChart(predictions) {
+            const ctx = document.getElementById('donutChart').getContext('2d');
+            
+            if (donutChartInstance) {
+                donutChartInstance.destroy();
+            }
+
+            const labels = predictions.map(p => p.label);
+            const values = predictions.map(p => (p.confidence * 100).toFixed(1));
+
+            const colors = ['#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'];
+
+            donutChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        borderRadius: 8,
+                        spacing: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#1E293B',
+                                font: {
+                                    weight: 600,
+                                    size: 12,
+                                    family: 'Inter'
+                                },
+                                padding: 12,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function addToHistory(data) {
+            const timestamp = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit' 
+            });
+            
+            scanHistory.unshift({
+                label: data.predicted_label,
+                confidence: (data.confidence * 100).toFixed(1),
+                timestamp: timestamp,
+                type: currentDetectionType
+            });
+
+            if (scanHistory.length > 5) {
+                scanHistory.pop();
+            }
+
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const tbody = document.getElementById('scansTableBody');
+            
+            if (scanHistory.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #94A3B8; padding: 40px 0;">
+                            No scans yet. Upload an image to get started.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = scanHistory.map(item => {
+                const statusClass = item.confidence > 70 ? 'status-green' : 
+                                   item.confidence > 50 ? 'status-orange' : 'status-yellow';
+                const statusIcon = item.confidence > 70 ? 'fa-circle-check' : 
+                                  item.confidence > 50 ? 'fa-circle-exclamation' : 'fa-circle-question';
+                
+                return `
+                    <tr>
+                        <td>${item.timestamp}</td>
+                        <td>${item.type === 'brain_tumor' ? 'Brain Tumor' : "Alzheimer's"}</td>
+                        <td><span class="status-badge ${statusClass}"><i class="fas ${statusIcon}"></i> ${item.label}</span></td>
+                        <td><strong>${item.confidence}%</strong></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function downloadReport() {
+            if (!currentPredictionData) {
+                alert('No diagnosis data available to download.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Header
+            doc.setFillColor(59, 130, 246);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text('MEDICAL AI DIAGNOSIS REPORT', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.text('AI-Powered Medical Diagnosis Platform', 105, 30, { align: 'center' });
+
+            // Report Info
+            doc.setTextColor(30, 41, 59);
+            doc.setFontSize(10);
+            doc.text(`Report Generated: ${new Date().toLocaleString()}`, 20, 55);
+            doc.text(`Detection Type: ${currentDetectionType === 'brain_tumor' ? 'Brain Tumor Analysis' : "Alzheimer's Disease Analysis"}`, 20, 62);
+
+            // Diagnosis Result Section
+            doc.setFillColor(209, 250, 229);
+            doc.rect(20, 75, 170, 35, 'F');
+            
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('DIAGNOSIS RESULT', 25, 85);
+            
+            doc.setFontSize(18);
+            doc.setTextColor(5, 150, 105);
+            doc.text(currentPredictionData.predicted_label.toUpperCase(), 25, 98);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 116, 139);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Confidence: ${(currentPredictionData.confidence * 100).toFixed(2)}%`, 25, 106);
+
+            // Detailed Analysis Section
+            doc.setTextColor(30, 41, 59);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('DETAILED ANALYSIS', 20, 130);
+
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            
+            let yPos = 145;
+            currentPredictionData.all_predictions.forEach((pred, index) => {
+                const confidence = (pred.confidence * 100).toFixed(2);
+                doc.text(`${pred.label}:`, 25, yPos);
+                doc.text(`${confidence}%`, 160, yPos);
+                
+                // Progress bar
+                doc.setFillColor(241, 245, 249);
+                doc.rect(25, yPos + 3, 140, 4, 'F');
+                doc.setFillColor(59, 130, 246);
+                doc.rect(25, yPos + 3, (confidence / 100) * 140, 4, 'F');
+                
+                yPos += 15;
+            });
+
+            // Disclaimer
+            doc.setFillColor(254, 243, 199);
+            doc.rect(20, 250, 170, 25, 'F');
+            
+            doc.setFontSize(9);
+            doc.setTextColor(146, 64, 14);
+            doc.setFont(undefined, 'bold');
+            doc.text('IMPORTANT DISCLAIMER:', 25, 258);
+            doc.setFont(undefined, 'normal');
+            doc.text('This system assists doctors and is not a replacement for medical professionals.', 25, 265);
+            doc.text('Please consult with a qualified healthcare provider for proper diagnosis and treatment.', 25, 271);
+
+            // Footer
+            doc.setTextColor(100, 116, 139);
+            doc.setFontSize(8);
+            doc.text('Medical AI Platform - Confidential Medical Report', 105, 285, { align: 'center' });
+
+            // Save PDF
+            doc.save(`medical-ai-diagnosis-${Date.now()}.pdf`);
+        }
+
+        function openImageModal() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const uploadedImg = document.getElementById('uploadedImage');
+            
+            modal.classList.add('active');
+            modalImg.src = uploadedImg.src;
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+        }
+
+        function logout() {
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/';
+                });
+        }
+
+        // Check if data is being stored
+        console.log('Scan History:', scanHistory);
+        console.log('Current Detection Type:', currentDetectionType);
+    </script>
+</body>
+</html>
