@@ -264,7 +264,11 @@
                     <label for="loginPassword">Password</label>
                     <input type="password" id="loginPassword" placeholder="Enter your password" required>
                 </div>
-                <div id="loginError" class="error"></div>
+                
+                <div style="text-align: right; margin-top: -15px; margin-bottom: 20px;">
+                    <a href="#" onclick="showForgotPassword()" style="color: #64748B; font-size: 13px; text-decoration: none; font-weight: 500;">Forgot Password?</a>
+                </div>
+<div id="loginError" class="error"></div>
                 <button type="submit" class="btn">Sign In</button>
             </form>
             <div class="toggle-form">
@@ -298,6 +302,27 @@
             </form>
             <div class="toggle-form">
                 Already have an account? <a href="#" onclick="showLogin()">Sign In</a>
+            </div>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgotPasswordForm" class="form-container">
+            <h2>Reset Password</h2>
+            <form id="forgotPasswordFormElement">
+                <div class="form-group">
+                    <label for="resetEmail">Email Address</label>
+                    <input type="email" id="resetEmail" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="resetNewPassword">New Password</label>
+                    <input type="password" id="resetNewPassword" placeholder="Enter new password" required>
+                </div>
+                <div id="resetError" class="error"></div>
+                <div id="resetSuccess" class="success"></div>
+                <button type="submit" class="btn">Reset Password</button>
+            </form>
+            <div class="toggle-form">
+                Remember your password? <a href="#" onclick="showLogin()">Sign In</a>
             </div>
         </div>
     </div>

@@ -228,6 +228,26 @@ def logout():
     session.clear()
     return jsonify({'message': 'Logged out successfully'}), 200
 
+
+@app.route('/reset_password', methods=['POST'])
+def reset_password():
+    data = request.json
+    email = data.get('email')
+    new_password = data.get('new_password')
+    
+    if not email or not new_password:
+        return jsonify({'error': 'Email and new password are required'}), 400
+        
+    users = load_users()
+    
+    if email in users:
+        # In a real app we'd verify email, but for this demo we'll just allow overriding
+        users[email]['password'] = generate_password_hash(new_password)
+        save_users(users)
+        return jsonify({'message': 'Password reset successfully'}), 200
+        
+    return jsonify({'error': 'Email not found'}), 404
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
