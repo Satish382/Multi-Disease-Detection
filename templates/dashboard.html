@@ -366,15 +366,7 @@
             color: #1E293B;
         }
 
-        .view-all-btn {
-            color: #3B82F6;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+
 
         .scans-table {
             width: 100%;
@@ -578,11 +570,11 @@
                 
                 <!-- Detection Type Tabs -->
                 <div class="detection-tabs">
-                    <button class="tab-btn active" onclick="switchDetectionType('brain_tumor')">
+                    <button class="tab-btn active" onclick="switchDetectionType('brain_tumor', event)">
                         <i class="fas fa-brain"></i>
                         Brain Tumor
                     </button>
-                    <button class="tab-btn" onclick="switchDetectionType('alzheimer')">
+                    <button class="tab-btn" onclick="switchDetectionType('alzheimer', event)">
                         <i class="fas fa-head-side-virus"></i>
                         Alzheimer's
                     </button>
@@ -657,12 +649,14 @@
 
         <!-- Recent Scans Table -->
         <div class="recent-scans-card">
+
             <div class="card-title-row">
                 <h3>Recent Scans</h3>
-                <div class="view-all-btn">
-                    View All <i class="fas fa-chevron-right"></i>
-                </div>
+                <button onclick="clearHistory()" style="padding: 8px 16px; background: #FEE2E2; color: #EF4444; border: 1px solid #FCA5A5; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;">
+                    <i class="fas fa-trash-alt"></i> Clear History
+                </button>
             </div>
+
             <table class="scans-table">
                 <thead>
                     <tr>
@@ -695,14 +689,43 @@
         let scanHistory = [];
         let currentPredictionData = null;
 
+        // Fetch history on page load
+        document.addEventListener('DOMContentLoaded', loadHistory);
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/get_history');
+                const data = await response.json();
+                if (data.history) {
+                    scanHistory = data.history.map(item => ({
+                        label: item.predicted_label,
+                        title: item.detection_type,
+                        confidence: (item.confidence * 100).toFixed(1),
+                        timestamp: new Date(item.timestamp).toLocaleDateString('en-US', { 
+                            year: 'numeric', month: '2-digit', day: '2-digit' 
+                        }),
+                        type: item.detection_type
+                    }));
+                    updateHistoryDisplay();
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+
         // Switch detection type
-        function switchDetectionType(type) {
+        function switchDetectionType(type, event) {
             currentDetectionType = type;
             
             // Update tab buttons
             const tabs = document.querySelectorAll('.tab-btn');
             tabs.forEach(tab => tab.classList.remove('active'));
-            event.target.closest('.tab-btn').classList.add('active');
+            
+            // Handle both manual click and direct call
+            if (event) {
+                event.target.closest('.tab-btn').classList.add('active');
+            }
         }
 
         // File upload handler
@@ -838,6 +861,25 @@
             }
 
             updateHistoryDisplay();
+        }
+
+        
+        async function clearHistory() {
+            if (!confirm('Are you sure you want to clear your entire scan history?')) {
+                return;
+            }
+            try {
+                const response = await fetch('/clear_history', { method: 'POST' });
+                if (response.ok) {
+                    scanHistory = [];
+                    updateHistoryDisplay();
+                } else {
+                    alert('Failed to clear history.');
+                }
+            } catch (error) {
+                console.error('Error clearing history:', error);
+                alert('An error occurred.');
+            }
         }
 
         function updateHistoryDisplay() {
