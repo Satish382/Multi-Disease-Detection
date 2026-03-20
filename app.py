@@ -57,7 +57,9 @@ def load_models():
         models["brain_tumor"] = tf.keras.models.load_model(brain_tumor_model_path, compile=False)
         print("Brain Tumor model loaded successfully.")
     except Exception as e:
-        print(f"Error loading Brain Tumor model: {str(e)}")
+        error_msg = f"Error loading Brain Tumor model: {str(e)}"
+        print(error_msg)
+        models["brain_tumor_error"] = error_msg
         models["brain_tumor"] = None
 
     # Load Alzheimer Model A (299x299)
@@ -66,7 +68,9 @@ def load_models():
         models['alzheimer'] = tf.keras.models.load_model(alzheimer_model_path, compile=False)
         print("Alzheimer Model A loaded successfully!")
     except Exception as e:
-        print(f"Error loading Alzheimer Model A: {str(e)}")
+        error_msg = f"Error loading Alzheimer Model A: {str(e)}"
+        print(error_msg)
+        models["alzheimer_error"] = error_msg
         models["alzheimer"] = None
 
     # Load Alzheimer Model B (150x150)
@@ -75,7 +79,9 @@ def load_models():
         models['alzheimer_150'] = tf.keras.models.load_model('new_alzheimer_model.keras', compile=False)
         print("Alzheimer Model B loaded successfully!")
     except Exception as e:
-        print(f"Error loading Alzheimer Model B: {str(e)}")
+        error_msg = f"Error loading Alzheimer Model B: {str(e)}"
+        print(error_msg)
+        models["alzheimer_150_error"] = error_msg
         models["alzheimer_150"] = None
 
     return models
@@ -335,8 +341,9 @@ def predict():
         labels = brain_tumor_labels if detection_type == 'brain_tumor' else alzheimer_labels
         
         if model is None:
+            load_error = models.get(f"{detection_type}_error", "Unknown loading error")
             return jsonify({
-                'error': f'The {detection_type} model is not loaded correctly on the server.',
+                'error': f'The {detection_type} model is not loaded correctly on the server. Details: {load_error}',
                 'type': 'model_missing'
             }), 500
 
