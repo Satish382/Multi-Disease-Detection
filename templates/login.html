@@ -84,11 +84,10 @@
             display: flex;
             align-items: center;
             margin-bottom: 8px;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
             color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.2px;
         }
 
         .label-group i {
@@ -231,14 +230,14 @@
             <form id="loginFormElement">
                 <div class="form-group">
                     <div class="label-group">
-                        <i class="fas fa-envelope"></i> EMAIL
+                        <i class="fas fa-envelope"></i> Email Address
                     </div>
                     <input type="email" id="loginEmail" placeholder="you@example.com" required>
                 </div>
 
                 <div class="form-group">
                     <div class="label-group">
-                        <i class="fas fa-lock"></i> PASSWORD
+                        <i class="fas fa-lock"></i> Password
                     </div>
                     <div class="input-wrapper">
                         <input type="password" id="loginPassword" placeholder="••••••••" required>
@@ -273,25 +272,16 @@
             <form id="signupFormElement">
                 <div class="form-group">
                     <div class="label-group">
-                        <i class="fas fa-user"></i> FULL NAME
+                        <i class="fas fa-user"></i> Full Name
                     </div>
                     <input type="text" id="signupName" placeholder="John Smith" required>
                 </div>
 
-                <div class="form-group">
-                    <div class="label-group">
-                        <i class="fas fa-venus-mars"></i> GENDER
-                    </div>
-                    <select id="signupGender" style="width: 100%; padding: 14px 16px; border: 1px solid var(--input-border); border-radius: 12px; background-color: var(--input-bg); font-size: 15px; color: var(--text-main); appearance: none; cursor: pointer;">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
+
 
                 <div class="form-group">
                     <div class="label-group">
-                        <i class="fas fa-envelope"></i> EMAIL
+                        <i class="fas fa-envelope"></i> Email Address
                     </div>
                     <input type="email" id="signupEmail" placeholder="you@example.com" required>
                 </div>
@@ -299,7 +289,7 @@
                 <div class="row">
                     <div class="form-group">
                         <div class="label-group">
-                            <i class="fas fa-lock"></i> PASSWORD
+                            <i class="fas fa-lock"></i> Password
                         </div>
                         <div class="input-wrapper">
                             <input type="password" id="signupPassword" placeholder="••••••••" required>
@@ -310,7 +300,7 @@
                     </div>
                     <div class="form-group">
                         <div class="label-group">
-                            <i class="fas fa-shield-alt"></i> CONFIRM
+                            <i class="fas fa-shield-alt"></i> Confirm Password
                         </div>
                         <div class="input-wrapper">
                             <input type="password" id="signupConfirmPassword" placeholder="••••••••" required>
@@ -346,7 +336,7 @@
             <form id="forgotPasswordFormElement">
                 <div class="form-group">
                     <div class="label-group">
-                        <i class="fas fa-envelope"></i> EMAIL
+                        <i class="fas fa-envelope"></i> Email Address
                     </div>
                     <input type="email" id="resetEmail" placeholder="you@example.com" required>
                 </div>
@@ -354,7 +344,7 @@
                 <div class="row">
                     <div class="form-group">
                         <div class="label-group">
-                            <i class="fas fa-lock"></i> NEW PASSWORD
+                            <i class="fas fa-lock"></i> New Password
                         </div>
                         <div class="input-wrapper">
                             <input type="password" id="resetNewPassword" placeholder="••••••••" required>
@@ -365,7 +355,7 @@
                     </div>
                     <div class="form-group">
                         <div class="label-group">
-                            <i class="fas fa-shield-alt"></i> CONFIRM
+                            <i class="fas fa-shield-alt"></i> Confirm Password
                         </div>
                         <div class="input-wrapper">
                             <input type="password" id="resetConfirmPassword" placeholder="••••••••" required>
@@ -428,7 +418,6 @@
             e.preventDefault();
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
-            const gender = document.getElementById('signupGender').value;
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('signupConfirmPassword').value;
             
@@ -451,7 +440,7 @@
                 const response = await fetch('/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password, gender })
+                    body: JSON.stringify({ name, email, password })
                 });
                 
                 const data = await response.json();
