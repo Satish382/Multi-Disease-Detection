@@ -390,6 +390,12 @@
             errorDiv.textContent = '';
             successDiv.textContent = '';
             
+            const confirmPassword = document.getElementById('resetConfirmPassword').value;
+            if (newPassword !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match!';
+                return;
+            }
+            
             if (newPassword.length < 6) {
                 errorDiv.textContent = 'Password must be at least 6 characters!';
                 return;
