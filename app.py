@@ -181,6 +181,7 @@ def signup():
     name = data.get('name')
     email = data.get('email')
     password = data.get('password')
+    gender = data.get('gender')
     
     if not name or not email or not password:
         return jsonify({'error': 'All fields are required'}), 400
@@ -192,6 +193,8 @@ def signup():
     
     users[email] = {
         'name': name,
+        'email': email,
+        'gender': gender,
         'password': password,  # In production, use proper password hashing
         'created_at': datetime.now().isoformat(),
         'scan_history': []

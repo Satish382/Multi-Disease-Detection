@@ -280,6 +280,17 @@
 
                 <div class="form-group">
                     <div class="label-group">
+                        <i class="fas fa-venus-mars"></i> GENDER
+                    </div>
+                    <select id="signupGender" style="width: 100%; padding: 14px 16px; border: 1px solid var(--input-border); border-radius: 12px; background-color: var(--input-bg); font-size: 15px; color: var(--text-main); appearance: none; cursor: pointer;">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-group">
                         <i class="fas fa-envelope"></i> EMAIL
                     </div>
                     <input type="email" id="signupEmail" placeholder="you@example.com" required>
@@ -417,6 +428,7 @@
             e.preventDefault();
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
+            const gender = document.getElementById('signupGender').value;
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('signupConfirmPassword').value;
             
@@ -439,7 +451,7 @@
                 const response = await fetch('/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
+                    body: JSON.stringify({ name, email, password, gender })
                 });
                 
                 const data = await response.json();
