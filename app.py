@@ -241,8 +241,8 @@ def reset_password():
     users = load_users()
     
     if email in users:
-        # In a real app we'd verify email, but for this demo we'll just allow overriding
-        users[email]['password'] = generate_password_hash(new_password)
+        # App currently stores plain text passwords, maintaining consistency
+        users[email]['password'] = new_password
         save_users(users)
         return jsonify({'message': 'Password reset successfully'}), 200
         

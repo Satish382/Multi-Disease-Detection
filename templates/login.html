@@ -322,7 +322,8 @@
                 <button type="submit" class="btn">Reset Password</button>
             </form>
             <div class="toggle-form">
-                Remember your password? <a href="#" onclick="showLogin()">Sign In</a>
+                Remember your password? <a href="#" onclick="showLogin()">Sign In</a><br><br>
+                Don't have an account? <a href="#" onclick="showSignup()">Create one</a>
             </div>
         </div>
     </div>
@@ -330,12 +331,14 @@
     <script>
         function showSignup() {
             document.getElementById('loginForm').classList.remove('active');
+            if(document.getElementById('forgotPasswordForm')) document.getElementById('forgotPasswordForm').classList.remove('active');
             document.getElementById('signupForm').classList.add('active');
             clearMessages();
         }
 
         function showLogin() {
             document.getElementById('signupForm').classList.remove('active');
+            if(document.getElementById('forgotPasswordForm')) document.getElementById('forgotPasswordForm').classList.remove('active');
             document.getElementById('loginForm').classList.add('active');
             clearMessages();
         }
