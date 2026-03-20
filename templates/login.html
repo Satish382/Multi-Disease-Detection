@@ -347,7 +347,56 @@
             document.getElementById('loginError').textContent = '';
             document.getElementById('signupError').textContent = '';
             document.getElementById('signupSuccess').textContent = '';
+            if(document.getElementById('resetError')) document.getElementById('resetError').textContent = '';
+            if(document.getElementById('resetSuccess')) document.getElementById('resetSuccess').textContent = '';
         }
+
+        function showForgotPassword() {
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('signupForm').classList.remove('active');
+            document.getElementById('forgotPasswordForm').classList.add('active');
+            clearMessages();
+        }
+
+        // Handle Password Reset
+        document.getElementById('forgotPasswordFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('resetEmail').value;
+            const newPassword = document.getElementById('resetNewPassword').value;
+            
+            const errorDiv = document.getElementById('resetError');
+            const successDiv = document.getElementById('resetSuccess');
+            
+            errorDiv.textContent = '';
+            successDiv.textContent = '';
+            
+            if (newPassword.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters!';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/reset_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email, new_password: newPassword })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    successDiv.textContent = 'Password reset successfully! Redirecting to login...';
+                    setTimeout(() => showLogin(), 2000);
+                } else {
+                    errorDiv.textContent = data.error || 'Password reset failed!';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'An error occurred. Please try again.';
+            }
+        });
 
         // Handle Signup
         document.getElementById('signupFormElement').addEventListener('submit', async (e) => {
